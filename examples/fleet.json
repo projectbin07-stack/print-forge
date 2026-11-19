@@ -1,0 +1,26 @@
+{
+  "labour": {
+    "windows": {
+      "mon-fri": "08:00-18:00"
+    },
+    "operators": 1,
+    "plate_change_min": 5,
+    "material_change_min": 10
+  },
+  "printers": [
+    {
+      "name": "P1S",
+      "model": "P1S",
+      "nozzle_mm": 0.4,
+      "ams_slots": 4,
+      "loaded": ["PLA:white", "PLA:red"]
+    },
+    {
+      "name": "Mini",
+      "model": "A1 Mini",
+      "count": 2,
+      "nozzle_mm": 0.4,
+      "ams_slots": 0
+    }
+  ]
+}

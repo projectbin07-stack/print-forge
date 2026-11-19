@@ -1,0 +1,46 @@
+# Example batch: a mixed run of small PLA products for one printer.
+# The quantities are an example, not a real order.
+
+[plate]
+printer = "a1-mini"      # p1s, a1 or a1-mini; `print-forge plate --printer` overrides it
+spacing = 4.0            # mm between parts
+brim = 0.0               # mm brim allowance around every part
+edge_margin = 6.0        # mm kept clear at the bed edge
+material = "PLA:white"   # default spool (printfarm-planner syntax TYPE[:label])
+
+[filament]               # rough estimate model, see README "Batch manifest"
+infill = 0.15
+walls = 2
+line_width = 0.42
+flow_mm3_s = 8.0
+plate_overhead_min = 6.0
+
+[[part]]
+family = "bead"
+preset = "round-10"
+copies = 60
+material = "PLA:red"
+
+[[part]]
+family = "bead"
+preset = "gem-12"
+copies = 24
+material = "PLA:red"
+
+[[part]]
+name = "keychain-NAV"
+family = "letter"
+preset = "keychain"
+copies = 6
+params = { text = "NAV" }
+
+[[part]]
+family = "cap"
+preset = "legend-n"
+copies = 12
+
+[[part]]
+family = "vase"
+preset = "tulip"
+copies = 4
+params = { height = 50 }
