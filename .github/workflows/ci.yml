@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: ${{ matrix.os }} / Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.10", "3.13"]
+    env:
+      # cross-project checks must run here, not be skipped
+      PRINT_FORGE_REQUIRE_STL_DOCTOR: "1"
+      PRINT_FORGE_REQUIRE_PLANNER: "1"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install
+        run: python -m pip install -e ".[dev]"
+      - name: Install stl-doctor v0.1.0 and printfarm-planner v0.3.0 from their public tags
+        run: >
+          python -m pip install
+          "stl-doctor @ git+https://github.com/projectbin07-stack/stl-doctor@v0.1.0"
+          "printfarm-planner @ git+https://github.com/projectbin07-stack/printfarm-planner@v0.3.0"
+      - name: Lint
+        run: ruff check .
+      - name: Format
+        run: ruff format --check .
+      - name: Type check
+        run: mypy
+      - name: Test
+        run: pytest --cov --cov-report=term-missing --cov-fail-under=85
+      - name: Generate one part of every family and check it with stl-doctor
+        shell: bash
+        run: |
+          set -e
+          mkdir -p out
+          print-forge --version
+          print-forge vase --preset tulip --height 60 --out out/vase.stl
+          print-forge vase --preset spiral-vase-mode --out out/vase-mode.stl
+          print-forge bead --preset gem-12 --out out/bead-gem.stl
+          print-forge bead --preset donut-14 --out out/bead-donut.3mf
+          print-forge letter --text NAV --out out/letter.stl
+          print-forge letter --preset tile-7 --ascii --out out/tile.stl
+          print-forge cap --preset legend-n --out out/cap.stl
+          for f in out/*.stl out/*.3mf; do
+            echo "== $f"
+            # exit code 2 means errors; warnings (e.g. thin MX stem walls) exit 0
+            stl-doctor check "$f" --printer a1-mini --no-thin-walls
+          done
+      - name: Plan a batch and hand it to printfarm-planner
+        shell: bash
+        run: |
+          set -e
+          print-forge plate examples/parts.toml --out out/plates
+          printfarm-planner check --fleet examples/fleet.json out/plates/jobs.csv
+          printfarm-planner plan --fleet examples/fleet.json out/plates/jobs.csv --start 2026-11-23T08:00
+          stl-doctor check out/plates/plate-01.3mf --printer a1-mini --no-thin-walls
+      - name: Pure-Python path (numpy removed)
+        run: |
+          python -m pip uninstall -y numpy
+          pytest -q tests/test_mesh.py tests/test_build.py tests/test_families.py
