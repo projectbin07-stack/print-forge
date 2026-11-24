@@ -22,7 +22,7 @@ from .base import Family, ParamError, param
 class LetterParams:
     text: str = param("A", "text to emboss (printable ASCII)")
     style: str = param("keychain", "base style", choices=("tile", "keychain"))
-    cap_height: float = param(12.0, "height of capital letters", "mm", 3, 150)
+    cap_height: float = param(12.0, "finished height of capital letters", "mm", 3, 150)
     stroke: float = param(1.6, "stroke width of the letters", "mm", 0.3, 10)
     tracking: float = param(1.0, "extra space between letters", "mm", -5, 20)
     base_thickness: float = param(2.4, "base plate thickness", "mm", 0.6, 20)
@@ -58,8 +58,15 @@ def letter_layout(p: LetterParams) -> LetterLayout:
         raise ParamError(
             f"unsupported character(s) {' '.join(repr(c) for c in bad)}; supported: {SUPPORTED!r}"
         )
+    # cap_height is the finished height of a capital letter. The font gives stroke centre
+    # lines, and thickening adds half the stroke above and below them, so the centre lines
+    # are laid out at cap_height - stroke.
+    if p.stroke >= p.cap_height:
+        raise ParamError(
+            f"stroke {p.stroke:g} mm must be smaller than cap height {p.cap_height:g} mm"
+        )
     try:
-        outline = text_outline(p.text, p.cap_height, p.stroke, p.tracking).centred()
+        outline = text_outline(p.text, p.cap_height - p.stroke, p.stroke, p.tracking).centred()
     except TextError as exc:
         raise ParamError(str(exc)) from None
     w = outline.width + 2 * p.padding

@@ -261,10 +261,11 @@ def test_letter_validation() -> None:
         letter.letter_layout(letter.LetterParams(text="   "))
     thin = letter.FAMILY.generate(letter.LetterParams(stroke=0.6), MINI)
     assert "stroke" in codes(thin.issues, WARNING)
-    # 'I' advances 8/21 of the cap height (3.81 mm); stroke 1.5 and tracking -2 leave
-    # 3.81 - 2 - 1.5 = 0.31 mm between the letters, under the 0.4 mm nozzle
+    # Centre lines are laid out at cap height - stroke = 8.5 mm, so 'I' advances 8/21 of that
+    # (3.24 mm); stroke 1.5 and tracking -1.5 leave 3.24 - 1.5 - 1.5 = 0.24 mm between the
+    # letters, under the 0.4 mm nozzle
     tight = letter.FAMILY.generate(
-        letter.LetterParams(text="II", cap_height=10, stroke=1.5, tracking=-2.0), MINI
+        letter.LetterParams(text="II", cap_height=10, stroke=1.5, tracking=-1.5), MINI
     )
     assert "gap" in codes(tight.issues, WARNING)
     long_text = letter.FAMILY.generate(
@@ -359,3 +360,21 @@ def test_random_text_keychains(seed: int) -> None:
     m = letter.build_letter(p)
     assert_solid(m)
     assert m.shell_count() == 1
+
+
+@pytest.mark.parametrize(
+    ("text", "cap", "stroke"), [("H", 12.0, 1.6), ("E", 9.0, 1.4), ("I", 20.0, 3.0)]
+)
+def test_cap_height_is_the_finished_letter_height(text: str, cap: float, stroke: float) -> None:
+    # 0.1.0 laid out the stroke centre lines at cap_height, so "H" at 12 mm with a 1.6 mm stroke
+    # came out 13.587 mm tall. The finished capital now measures cap_height, within the error
+    # of the grid-based thickening (cell = stroke / 6), measured at under 1 % of the stroke.
+    outline = letter.letter_layout(
+        letter.LetterParams(text=text, cap_height=cap, stroke=stroke)
+    ).outline
+    assert outline.height == pytest.approx(cap, abs=0.01 * stroke + 0.01)
+
+
+def test_stroke_must_be_smaller_than_cap_height() -> None:
+    with pytest.raises(ParamError, match="smaller than cap height"):
+        letter.build_letter(letter.LetterParams(text="A", cap_height=4, stroke=4))
