@@ -40,7 +40,7 @@ page has no JavaScript and loads nothing from the network.*
 - **Geometrically validated:** every mesh print-forge generates is checked to be closed and
   consistently wound (each edge used by exactly two faces in opposite directions), to have
   positive volume and no vertices close enough for a reader to weld them, for all presets and for
-  seeded random parameter sweeps (465 tests). Every preset also passes `stl-doctor check` with no
+  seeded random parameter sweeps (469 tests). Every preset also passes `stl-doctor check` with no
   errors (and no self-intersections) in the test suite and in CI.
 - **Not validated by this project:** none of the designs have been sliced in Bambu Studio and
   printed as part of this project, so there is no evidence here of how they print, how strong
@@ -67,7 +67,7 @@ All output below is real, copied from a terminal (Windows, Python 3.14).
 
 ```console
 $ print-forge vase --preset tulip --height 60 --out vase.stl
-print-forge 0.1.0  vase: vase-circle-60mm
+print-forge 0.1.1  vase: vase-circle-60mm
   wrote      vase.stl (binary STL, 28028 triangles)
   size       47.99 x 47.99 x 60.00 mm  (Bambu Lab P1S (256 x 256 x 256 mm))
   volume     13366.4 mm^3, surface 16921.8 mm^2
@@ -78,19 +78,19 @@ print-forge 0.1.0  vase: vase-circle-60mm
 verdict: OK (0 errors, 0 warnings)
 
 $ print-forge letter --text NAV --out nav.3mf
-print-forge 0.1.0  letter: keychain-NAV
-  wrote      nav.3mf (3MF, 932 triangles, units mm)
-  size       49.88 x 19.60 x 3.60 mm  (Bambu Lab P1S (256 x 256 x 256 mm))
-  volume     2462.7 mm^3, surface 2483.5 mm^2
-  mesh       932 triangles, closed and consistently wound, 1 shell(s)
-  filament   ~2.66 g PLA (rough model: 2 walls x 0.42 mm, 15% infill)
+print-forge 0.1.1  letter: keychain-NAV
+  wrote      nav.3mf (3MF, 920 triangles, units mm)
+  size       45.84 x 18.00 x 3.60 mm  (Bambu Lab P1S (256 x 256 x 256 mm))
+  volume     2071.9 mm^3, surface 2120.0 mm^2
+  mesh       920 triangles, closed and consistently wound, 1 shell(s)
+  filament   ~2.26 g PLA (rough model: 2 walls x 0.42 mm, 15% infill)
   note       flat base, vertical walls: no support needed
   -          Raised letters are part of the same solid as the base. For two colours, add a filament change (colour swap) at z = 2.4 mm in the slicer.
   -          Font: Hershey Roman Simplex (data and its distribution terms in font_data.py), strokes thickened to 1.6 mm by print-forge.
 verdict: OK (0 errors, 0 warnings)
 
 $ print-forge cap --preset legend-n --out cap.stl
-print-forge 0.1.0  cap: cap-spherical-N
+print-forge 0.1.1  cap: cap-spherical-N
   wrote      cap.stl (binary STL, 1360 triangles)
   size       18.00 x 18.00 x 8.09 mm  (Bambu Lab P1S (256 x 256 x 256 mm))
   volume     921.2 mm^3, surface 1406.1 mm^2
@@ -104,7 +104,7 @@ print-forge 0.1.0  cap: cap-spherical-N
 verdict: OK (0 errors, 1 warning)
 
 $ print-forge bead --count 200 --printer a1-mini --spacing 3 --out beads
-print-forge 0.1.0  batch for Bambu Lab A1 mini (180 x 180 x 180 mm)
+print-forge 0.1.1  batch for Bambu Lab A1 mini (180 x 180 x 180 mm)
   plate-01.3mf  x1  PLA        bead-sphere-10mm x169; ~69.6 g, ~123 min
   plate-02.3mf  x1  PLA        bead-sphere-10mm x31; ~12.8 g, ~27 min
   total: 2 plate(s) to print (2 distinct), ~82 g filament, ~2.5 h (rough model)
@@ -205,7 +205,7 @@ are one solid.
 |---|---|---|---|
 | `text` | `A` |  | text to emboss (printable ASCII) |
 | `style` | `keychain` | tile, keychain | base style |
-| `cap-height` | 12 mm | 3 - 150 mm | height of capital letters |
+| `cap-height` | 12 mm | 3 - 150 mm | finished height of capital letters, strokes included (must exceed `stroke`) |
 | `stroke` | 1.6 mm | 0.3 - 10 mm | stroke width of the letters |
 | `tracking` | 1 mm | -5 - 20 mm | extra space between letters |
 | `base-thickness` | 2.4 mm | 0.6 - 20 mm | base plate thickness |
@@ -297,29 +297,29 @@ flowchart LR
 
 ```console
 $ print-forge plate examples/parts.toml --printer a1-mini --out plates
-print-forge 0.1.0  batch for Bambu Lab A1 mini (180 x 180 x 180 mm)
+print-forge 0.1.1  batch for Bambu Lab A1 mini (180 x 180 x 180 mm)
   plate-01.3mf  x1  PLA:red    bead-gem-12 x24, bead-round-10 x60; ~37.7 g, ~69 min
-  plate-02.3mf  x1  PLA:white  cap-legend-n x12, keychain-NAV x6, vase-tulip x4; ~86.7 g, ~152 min
+  plate-02.3mf  x1  PLA:white  cap-legend-n x12, keychain-NAV x6, vase-tulip x4; ~84.4 g, ~148 min
   warning: cap-legend-n: stem wall at the socket corners is 0.45 mm, below two line widths (0.8 mm): it will print as single lines
-  total: 2 plate(s) to print (2 distinct), ~124 g filament, ~3.7 h (rough model)
+  total: 2 plate(s) to print (2 distinct), ~122 g filament, ~3.6 h (rough model)
   wrote plate-01.3mf, plate-02.3mf, jobs.csv, manifest.csv, manifest.json to plates
 
 $ cat plates/jobs.csv
-# print-forge 0.1.0: print_time and mass_g are rough pre-slicing estimates (see README); replace with gcode-insight analyses after slicing.
+# print-forge 0.1.1: print_time and mass_g are rough pre-slicing estimates (see README); replace with gcode-insight analyses after slicing.
 name,copies,print_time,material,nozzle_mm,size_mm,mass_g,due,priority,models,gcode_json
 plate-01,1,1h09m,PLA:red,0.4,166.0x168.0x12.0,37.7,,0,,
-plate-02,1,2h32m,PLA:white,0.4,167.9x161.2x50.0,86.7,,0,,
+plate-02,1,2h28m,PLA:white,0.4,158.0x163.8x50.0,84.4,,0,,
 
 $ printfarm-planner plan --fleet examples/fleet.json plates/jobs.csv --start 2026-11-23T08:00
 Production plan (strategy: fill)
 
-  Start Mon 23 Nov 08:00   Finish Mon 23 Nov 10:42   Makespan 2h 42m
-  2 plates, 3h 41m printing, fleet utilisation 45.5%
+  Start Mon 23 Nov 08:00   Finish Mon 23 Nov 10:38   Makespan 2h 38m
+  2 plates, 3h 37m printing, fleet utilisation 45.8%
   Operator: 4 tasks, 20m, 0 material changes
   ...
 Schedule
   printer  plate     start             end                print  material
-  P1S      plate-02  Mon 23 Nov 08:05  Mon 23 Nov 10:37  2h 32m  PLA:white
+  P1S      plate-02  Mon 23 Nov 08:05  Mon 23 Nov 10:33  2h 28m  PLA:white
   Mini-1   plate-01  Mon 23 Nov 08:10  Mon 23 Nov 09:19  1h 09m  PLA:red
 ```
 
@@ -328,7 +328,7 @@ the example; they are not a real order or a real farm.
 
 ```console
 $ stl-doctor check vase.stl --printer a1-mini
-stl-doctor 0.1.0  vase.stl
+stl-doctor 0.2.0  vase.stl
   format     binary, 28028 facets in file
   mesh       28028 faces, 14016 vertices (welded at 0.0001 mm), 1 shell(s)
   size       47.99 x 47.99 x 60.00 mm, fits Bambu Lab A1 mini (180 x 180 x 180 mm)
@@ -344,15 +344,16 @@ How compatibility is verified:
 
 - **stl-doctor:** `tests/test_stl_doctor.py` writes every preset of every family as STL, runs
   stl-doctor's own `analyze` on it and requires no error findings, no self-intersections, one
-  shell, a watertight result and the same volume. CI installs stl-doctor from its public `v0.1.0`
+  shell, a watertight result and the same volume. CI installs stl-doctor from its public `v0.2.0`
   tag and sets `PRINT_FORGE_REQUIRE_STL_DOCTOR=1`, which turns the local "skip if not installed"
   into a failure. CI also runs the `stl-doctor check` command on one generated part of every
-  family and on a packed plate.
+  family and on a packed plate. Since stl-doctor 0.2.0 the plate check covers every build item
+  of the 3MF (84 beads on the example's first plate); 0.1.0 read only the first item.
 - **printfarm-planner:** `tests/test_batch.py` checks the jobs CSV against the rules in
   printfarm-planner's README (columns, unique names, whole-number copies, duration formats,
   `TYPE[:label]` spools, `XxYxZ` sizes that fit the bed, positive mass, `#` comment lines) and,
   when printfarm-planner is installed, loads it with printfarm-planner's own `load_jobs_csv` and
-  compares names, copies, spools, mass and time. CI installs printfarm-planner `v0.3.0` from its
+  compares names, copies, spools, mass and time. CI installs printfarm-planner `v0.4.0` from its
   repository, requires that test (`PRINT_FORGE_REQUIRE_PLANNER=1`) and runs `printfarm-planner
   check` and `plan` on the generated CSV.
 
@@ -401,9 +402,13 @@ nobody mistakes them for slicer output:
   assumption, not a measurement.
 
 The model treats top and bottom skins like walls and ignores brims, purge lines, supports and
-seams. Slicer numbers will differ; this project has not measured by how much. After slicing, put
-a gcode-insight analysis path in the `gcode_json` column and clear `print_time` so
-printfarm-planner uses the slicer's estimate.
+seams. Slicer numbers will differ; this project has not measured by how much. After slicing, write
+a gcode-insight analysis (`gcode-insight analyze plate-01.gcode --json --out plate-01.json`), put
+its path in the `gcode_json` column, and clear `print_time`, `material`, `nozzle_mm`, `size_mm`
+and `mass_g` in that row. printfarm-planner gives CSV values priority over the analysis, so any
+column left filled keeps print-forge's rough estimate (printfarm-planner 0.4.0 prints a warning
+when the two differ clearly). With gcode-insight 0.2.0 or later the analysis also supplies the
+filament colour and the printer model the plate was sliced for.
 
 ## How the meshes are built
 
@@ -502,7 +507,7 @@ python -m pip install -e ".[dev]"
 ruff check . && ruff format --check . && mypy && pytest --cov
 ```
 
-465 tests, 97 % line coverage locally (Windows, Python 3.14, with stl-doctor and printfarm-planner
+469 tests, 97 % line coverage locally (Windows, Python 3.14, with stl-doctor and printfarm-planner
 installed). Highlights:
 
 - every constructor and every family is closed, consistently wound, outward and weld-safe for

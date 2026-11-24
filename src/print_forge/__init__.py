@@ -4,4 +4,4 @@ Every generator builds its solid so that it is closed and consistently wound by 
 (no mesh booleans), then validates it for printing on Bambu Lab P1S/A1/A1 mini beds.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
