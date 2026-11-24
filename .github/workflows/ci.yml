@@ -32,11 +32,11 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install
         run: python -m pip install -e ".[dev]"
-      - name: Install stl-doctor v0.1.0 and printfarm-planner v0.3.0 from their public tags
+      - name: Install stl-doctor v0.2.0 and printfarm-planner v0.4.0 from their public tags
         run: >
           python -m pip install
-          "stl-doctor @ git+https://github.com/projectbin07-stack/stl-doctor@v0.1.0"
-          "printfarm-planner @ git+https://github.com/projectbin07-stack/printfarm-planner@v0.3.0"
+          "stl-doctor @ git+https://github.com/projectbin07-stack/stl-doctor@v0.2.0"
+          "printfarm-planner @ git+https://github.com/projectbin07-stack/printfarm-planner@v0.4.0"
       - name: Lint
         run: ruff check .
       - name: Format
@@ -70,7 +70,10 @@ jobs:
           print-forge plate examples/parts.toml --out out/plates
           printfarm-planner check --fleet examples/fleet.json out/plates/jobs.csv
           printfarm-planner plan --fleet examples/fleet.json out/plates/jobs.csv --start 2026-11-23T08:00
-          stl-doctor check out/plates/plate-01.3mf --printer a1-mini --no-thin-walls
+          # stl-doctor >= 0.2.0 checks every build item of the plate, not only the first
+          stl-doctor check out/plates/plate-01.3mf --printer a1-mini --no-thin-walls | tee plate.txt
+          test "${PIPESTATUS[0]}" -eq 0
+          grep -E "objects +[0-9]+ build items" plate.txt
       - name: Pure-Python path (numpy removed)
         run: |
           python -m pip uninstall -y numpy

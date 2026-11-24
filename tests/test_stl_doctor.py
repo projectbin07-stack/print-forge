@@ -2,7 +2,7 @@
 
 stl-doctor (github.com/projectbin07-stack/stl-doctor) is an independent mesh checker: it welds
 the STL's vertices itself and reports non-manifold edges, holes, flipped faces and bed-fit
-problems as errors. The test is skipped when stl-doctor is not installed; CI installs v0.1.0 and
+problems as errors. The test is skipped when stl-doctor is not installed; CI installs v0.2.0 and
 sets PRINT_FORGE_REQUIRE_STL_DOCTOR=1 so that a missing install fails instead.
 """
 
