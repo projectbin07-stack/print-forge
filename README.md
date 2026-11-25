@@ -504,7 +504,8 @@ options:
   --version             show program's version number and exit
 ```
 
-Every family command takes `--preset`, `--list-presets`, `--out FILE` (`.stl` or `.3mf`),
+Every family command takes `--preset`, `--list-presets`, `--out FILE` (`.stl` or `.3mf`; any other
+extension, such as `.obj`, is refused with exit 2 and nothing is written),
 `--ascii`, `--json`, `--force`, `--printer`, `--nozzle`, `--overhang` and one flag per parameter
 (`print-forge bead --help` lists them). `plate` takes the parts file, `--out DIR`, `--printer`,
 `--force` and `--json`; `catalogue` takes `--out`, `--family` (repeatable), `--printer`,
@@ -545,6 +546,8 @@ printfarm-planner command-line checks above, then the geometry tests again with 
 - The cap's MX stem fit is unverified and printer-dependent; the stem wall at the socket corners
   is about 0.45 mm with the nominal numbers.
 - Only upright orientations are generated; there is no orientation search.
+- Output is STL or 3MF only. OBJ is not written, because stl-doctor (which checks print-forge
+  output) cannot read it, and OBJ, like STL, has no unit field. 3MF states its units.
 - Packing uses bounding rectangles of footprints, so round parts waste the corners; no nesting of
   small parts inside large ones.
 - One spool per plate: parts with different materials go on different plates; multi-colour

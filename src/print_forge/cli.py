@@ -36,6 +36,9 @@ from .validate import ERROR, WARNING, PrintSettings
 
 EXIT_OK = 0
 EXIT_ERROR = 2
+#: Mesh formats ``--out`` can write. OBJ is refused rather than written: stl-doctor, which
+#: checks print-forge output, cannot read it, and OBJ has no unit field.
+MESH_SUFFIXES = (".stl", ".3mf")
 
 
 def _positive(text: str) -> float:
@@ -76,7 +79,12 @@ def _family_parser(sub: Any, fam: Family[Any]) -> None:
         "--preset", default=None, help=f"start from a preset (default {fam.default_preset})"
     )
     p.add_argument("--list-presets", action="store_true", help="list presets and exit")
-    p.add_argument("--out", "-o", metavar="FILE", help="output .stl or .3mf (default: <name>.stl)")
+    p.add_argument(
+        "--out",
+        "-o",
+        metavar="FILE",
+        help="output .stl or .3mf; other extensions are refused (default: <name>.stl)",
+    )
     p.add_argument("--ascii", action="store_true", help="write ASCII STL instead of binary")
     p.add_argument("--json", action="store_true", help="print the summary as JSON")
     p.add_argument("--force", action="store_true", help="write the file even with errors")
@@ -208,6 +216,13 @@ def cmd_family(args: argparse.Namespace, out: TextIO, err: TextIO) -> int:
         return EXIT_OK
     settings = _settings(args)
     params = fam.make_params(args.preset, _overrides(args, fam))
+    if args.out and not (fam.name == "bead" and args.count):
+        suffix = Path(args.out).suffix.lower()
+        if suffix not in MESH_SUFFIXES:
+            raise ValueError(
+                f"--out {args.out}: cannot write {suffix or 'a file without an extension'}; "
+                "use a .stl (binary, or ASCII with --ascii) or .3mf file name"
+            )
     if fam.name == "bead" and args.count:
         return _bead_batch(args, params, settings, out)
     part = fam.generate(params, settings)

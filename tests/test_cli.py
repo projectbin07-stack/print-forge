@@ -135,3 +135,29 @@ def test_version(capsys: pytest.CaptureFixture[str]) -> None:
         main(["--version"])
     assert exc.value.code == 0
     assert "print-forge" in capsys.readouterr().out
+
+
+@pytest.mark.parametrize("name", ["b.obj", "b.OBJ", "b.step", "b", "b.stl.txt"])
+def test_unsupported_output_extension_is_refused(tmp_path: Path, name: str) -> None:
+    # Audit repro: `--out x.obj` wrote a binary STL under the .obj name without a word.
+    path = tmp_path / name
+    code, out, err = run("bead", "--preset", "gem-12", "--out", str(path))
+    assert code == 2
+    assert out == ""
+    assert "cannot write" in err
+    assert "use a .stl (binary, or ASCII with --ascii) or .3mf file name" in err
+    assert not path.exists()
+
+
+@pytest.mark.parametrize("name", ["b.STL", "b.3MF"])
+def test_output_extension_is_case_insensitive(tmp_path: Path, name: str) -> None:
+    path = tmp_path / name
+    code, _, _ = run("bead", "--preset", "gem-12", "--out", str(path))
+    assert code == 0
+    assert path.read_bytes()[:2] == (b"PK" if name.endswith("3MF") else b"pr")
+
+
+def test_bead_batch_out_is_still_a_directory(tmp_path: Path) -> None:
+    code, _, _ = run("bead", "--count", "4", "--out", str(tmp_path / "beads"))
+    assert code == 0
+    assert (tmp_path / "beads" / "jobs.csv").exists()
