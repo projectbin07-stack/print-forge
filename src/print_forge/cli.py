@@ -31,7 +31,7 @@ from .families.base import Family, param_fields
 from .io_3mf import write_3mf
 from .io_stl import write_stl
 from .preview import catalogue_html, coarse_params_for_preview
-from .printers import DEFAULT_PRINTER, PRINTERS
+from .printers import DEFAULT_PRINTER, PRINTERS, printer_key
 from .validate import ERROR, WARNING, PrintSettings
 
 EXIT_OK = 0
@@ -51,6 +51,7 @@ def _positive(text: str) -> float:
 def _machine_args(p: argparse.ArgumentParser) -> None:
     p.add_argument(
         "--printer",
+        type=printer_key,
         choices=sorted(PRINTERS),
         default=None,
         help=f"bed to validate and pack for (default {DEFAULT_PRINTER})",
@@ -136,7 +137,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
     plate.add_argument("parts", help="parts file (TOML), see examples/parts.toml")
     plate.add_argument("--out", "-o", required=True, metavar="DIR", help="output directory")
-    plate.add_argument("--printer", choices=sorted(PRINTERS), help="overrides [plate] printer")
+    plate.add_argument(
+        "--printer", type=printer_key, choices=sorted(PRINTERS), help="overrides [plate] printer"
+    )
     plate.add_argument("--force", action="store_true", help="plate parts even with errors")
     plate.add_argument("--json", action="store_true", help="print the manifest as JSON")
     cat = sub.add_parser(

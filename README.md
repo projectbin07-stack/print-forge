@@ -122,7 +122,8 @@ whose profile flares out faster than the overhang limit.
 Every parameter is a command-line flag (`--cap-height 9`), a key in a parts file
 (`params = { cap_height = 9 }`), and is listed with its value in the catalogue.
 `print-forge <family> --list-presets` shows the presets. Validation always includes a closed-mesh
-audit and the bed-fit check for the chosen printer (`--printer p1s|a1|a1-mini`), and uses the
+audit and the bed-fit check for the chosen printer (`--printer p1s|p1p|x1c|a1|a1-mini`; aliases
+such as `X1C` or `"A1 mini"` also work), and uses the
 nozzle (`--nozzle`, default 0.4 mm) and overhang limit (`--overhang`, default 45 deg from
 vertical).
 
@@ -361,7 +362,7 @@ How compatibility is verified:
 
 ```toml
 [plate]
-printer = "a1-mini"      # p1s, a1 or a1-mini; `plate --printer` overrides it
+printer = "a1-mini"      # p1s, p1p, x1c, a1 or a1-mini; `plate --printer` overrides it
 spacing = 4.0            # mm between parts (between brims, if any)
 brim = 0.0               # mm brim allowance around every part
 edge_margin = 6.0        # mm kept clear at the bed edge
@@ -458,12 +459,21 @@ src/print_forge/
   io_stl.py      binary/ASCII STL writer (and reader for tests)
   io_3mf.py      3MF writer with named objects and build-item transforms (and reader)
   packer.py      MaxRects bed packing with spacing, brim and edge margin
+  printers.py    build volumes, taken from the shared registry
+  registry.py    shared printer/material registry with print_registry.json, vendored unchanged
+                 from gcode-insight (a CI job compares them with the pinned release)
   estimate.py    filament / time model
   batch.py       parts file -> plates, manifest, printfarm-planner jobs CSV
   preview.py     HTML catalogue with inline-SVG renders
   tomlread.py    tomllib, or a subset parser on Python 3.10
   cli.py         command-line interface
 ```
+
+The printer build volumes come from the printer and material registry shared with gcode-insight,
+printfarm-planner and stl-doctor. Every printer in it lists the manufacturer pages its figures
+were taken from; see gcode-insight's
+[docs/registry.md](https://github.com/projectbin07-stack/gcode-insight/blob/main/docs/registry.md)
+for why the file is vendored rather than shared as a package.
 
 ## Command-line reference
 
