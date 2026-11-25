@@ -67,7 +67,7 @@ All output below is real, copied from a terminal (Windows, Python 3.14).
 
 ```console
 $ print-forge vase --preset tulip --height 60 --out vase.stl
-print-forge 0.1.1  vase: vase-circle-60mm
+print-forge 0.2.0  vase: vase-circle-60mm
   wrote      vase.stl (binary STL, 28028 triangles)
   size       47.99 x 47.99 x 60.00 mm  (Bambu Lab P1S (256 x 256 x 256 mm))
   volume     13366.4 mm^3, surface 16921.8 mm^2
@@ -78,7 +78,7 @@ print-forge 0.1.1  vase: vase-circle-60mm
 verdict: OK (0 errors, 0 warnings)
 
 $ print-forge letter --text NAV --out nav.3mf
-print-forge 0.1.1  letter: keychain-NAV
+print-forge 0.2.0  letter: keychain-NAV
   wrote      nav.3mf (3MF, 920 triangles, units mm)
   size       45.84 x 18.00 x 3.60 mm  (Bambu Lab P1S (256 x 256 x 256 mm))
   volume     2071.9 mm^3, surface 2120.0 mm^2
@@ -90,7 +90,7 @@ print-forge 0.1.1  letter: keychain-NAV
 verdict: OK (0 errors, 0 warnings)
 
 $ print-forge cap --preset legend-n --out cap.stl
-print-forge 0.1.1  cap: cap-spherical-N
+print-forge 0.2.0  cap: cap-spherical-N
   wrote      cap.stl (binary STL, 1360 triangles)
   size       18.00 x 18.00 x 8.09 mm  (Bambu Lab P1S (256 x 256 x 256 mm))
   volume     921.2 mm^3, surface 1406.1 mm^2
@@ -104,7 +104,7 @@ print-forge 0.1.1  cap: cap-spherical-N
 verdict: OK (0 errors, 1 warning)
 
 $ print-forge bead --count 200 --printer a1-mini --spacing 3 --out beads
-print-forge 0.1.1  batch for Bambu Lab A1 mini (180 x 180 x 180 mm)
+print-forge 0.2.0  batch for Bambu Lab A1 mini (180 x 180 x 180 mm)
   plate-01.3mf  x1  PLA        bead-sphere-10mm x169; ~69.6 g, ~123 min
   plate-02.3mf  x1  PLA        bead-sphere-10mm x31; ~12.8 g, ~27 min
   total: 2 plate(s) to print (2 distinct), ~82 g filament, ~2.5 h (rough model)
@@ -298,7 +298,7 @@ flowchart LR
 
 ```console
 $ print-forge plate examples/parts.toml --printer a1-mini --out plates
-print-forge 0.1.1  batch for Bambu Lab A1 mini (180 x 180 x 180 mm)
+print-forge 0.2.0  batch for Bambu Lab A1 mini (180 x 180 x 180 mm)
   plate-01.3mf  x1  PLA:red    bead-gem-12 x24, bead-round-10 x60; ~37.7 g, ~69 min
   plate-02.3mf  x1  PLA:white  cap-legend-n x12, keychain-NAV x6, vase-tulip x4; ~84.4 g, ~148 min
   warning: cap-legend-n: stem wall at the socket corners is 0.45 mm, below two line widths (0.8 mm): it will print as single lines
@@ -306,7 +306,7 @@ print-forge 0.1.1  batch for Bambu Lab A1 mini (180 x 180 x 180 mm)
   wrote plate-01.3mf, plate-02.3mf, jobs.csv, manifest.csv, manifest.json to plates
 
 $ cat plates/jobs.csv
-# print-forge 0.1.1: print_time and mass_g are rough pre-slicing estimates (see README); replace with gcode-insight analyses after slicing.
+# print-forge 0.2.0: print_time and mass_g are rough pre-slicing estimates (see README); replace with gcode-insight analyses after slicing.
 name,copies,print_time,material,nozzle_mm,size_mm,mass_g,due,priority,models,gcode_json
 plate-01,1,1h09m,PLA:red,0.4,166.0x168.0x12.0,37.7,,0,,
 plate-02,1,2h28m,PLA:white,0.4,158.0x163.8x50.0,84.4,,0,,

@@ -4,6 +4,36 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.2.0] - 2026-11-25
+
+### Changed
+
+- **`--out` refuses extensions other than `.stl` and `.3mf`** (any case). Before, `--out x.obj`
+  silently wrote a binary STL under the `.obj` name. Any other extension, including none, now
+  exits 2 with a message naming the supported formats, and nothing is written. OBJ is refused
+  rather than written: stl-doctor, which checks print-forge output in CI, cannot read OBJ, and
+  OBJ has no unit field. STL and 3MF cover every slicer, and 3MF records its units. On the audit
+  repro:
+
+  ```text
+  0.1.1  $ print-forge bead --preset gem-12 --out b.obj
+           wrote      b.obj (binary STL, 96 triangles)        exit 0, file starts "print-forge binary STL"
+  0.2.0  $ print-forge bead --preset gem-12 --out b.obj
+         print-forge: error: --out b.obj: cannot write .obj; use a .stl (binary, or ASCII with
+         --ascii) or .3mf file name                           exit 2, no file
+  ```
+
+- **Printer build volumes come from the shared printer and material registry** (audit #49).
+  `registry.py` and `print_registry.json` are vendored unchanged from gcode-insight v0.3.0, and a
+  new CI job fails if they drift from that tag. This adds the Bambu Lab **P1P** and **X1 Carbon**
+  (256 x 256 x 256 mm, with manufacturer sources in the data file) to the P1S, A1 and A1 mini.
+  The existing three volumes are unchanged. `--printer` and `[plate] printer` accept registry
+  aliases (`X1C`, `"A1 mini"`). Before, `--printer x1c` was rejected by argparse
+  (`invalid choice: 'x1c'`).
+- CI pins stl-doctor **v0.3.0** and printfarm-planner **v0.5.0**, the releases that use the same
+  registry. CI also checks an X1 Carbon part with stl-doctor and the `.obj` refusal.
+  `CONTRIBUTING.md` showed the old 0.1.0 / 0.3.0 pins and is updated.
+
 ## [0.1.1] - 2026-11-24
 
 ### Fixed
@@ -53,5 +83,6 @@ All notable changes to this project are documented here. The format follows
   socket dimensions, glyph coverage, packer invariants, IO round trips, manifest totals, HTML
   well-formedness, CLI; stl-doctor and printfarm-planner compatibility tests required in CI.
 
+[0.2.0]: https://github.com/projectbin07-stack/print-forge/releases/tag/v0.2.0
 [0.1.1]: https://github.com/projectbin07-stack/print-forge/releases/tag/v0.1.1
 [0.1.0]: https://github.com/projectbin07-stack/print-forge/releases/tag/v0.1.0
