@@ -10,8 +10,8 @@ cd print-forge
 python -m venv .venv
 .venv/bin/pip install -e ".[dev]"      # Windows: .venv\Scripts\pip
 # optional, enables the cross-project tests that CI always runs:
-.venv/bin/pip install "stl-doctor @ git+https://github.com/projectbin07-stack/stl-doctor@v0.1.0"
-.venv/bin/pip install "printfarm-planner @ git+https://github.com/projectbin07-stack/printfarm-planner@v0.3.0"
+.venv/bin/pip install "stl-doctor @ git+https://github.com/projectbin07-stack/stl-doctor@v0.3.0"
+.venv/bin/pip install "printfarm-planner @ git+https://github.com/projectbin07-stack/printfarm-planner@v0.5.0"
 ```
 
 ## Checks

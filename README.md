@@ -329,7 +329,7 @@ the example; they are not a real order or a real farm.
 
 ```console
 $ stl-doctor check vase.stl --printer a1-mini
-stl-doctor 0.2.0  vase.stl
+stl-doctor 0.3.0  vase.stl
   format     binary, 28028 facets in file
   mesh       28028 faces, 14016 vertices (welded at 0.0001 mm), 1 shell(s)
   size       47.99 x 47.99 x 60.00 mm, fits Bambu Lab A1 mini (180 x 180 x 180 mm)
@@ -345,7 +345,7 @@ How compatibility is verified:
 
 - **stl-doctor:** `tests/test_stl_doctor.py` writes every preset of every family as STL, runs
   stl-doctor's own `analyze` on it and requires no error findings, no self-intersections, one
-  shell, a watertight result and the same volume. CI installs stl-doctor from its public `v0.2.0`
+  shell, a watertight result and the same volume. CI installs stl-doctor from its public `v0.3.0`
   tag and sets `PRINT_FORGE_REQUIRE_STL_DOCTOR=1`, which turns the local "skip if not installed"
   into a failure. CI also runs the `stl-doctor check` command on one generated part of every
   family and on a packed plate. Since stl-doctor 0.2.0 the plate check covers every build item
@@ -354,7 +354,7 @@ How compatibility is verified:
   printfarm-planner's README (columns, unique names, whole-number copies, duration formats,
   `TYPE[:label]` spools, `XxYxZ` sizes that fit the bed, positive mass, `#` comment lines) and,
   when printfarm-planner is installed, loads it with printfarm-planner's own `load_jobs_csv` and
-  compares names, copies, spools, mass and time. CI installs printfarm-planner `v0.4.0` from its
+  compares names, copies, spools, mass and time. CI installs printfarm-planner `v0.5.0` from its
   repository, requires that test (`PRINT_FORGE_REQUIRE_PLANNER=1`) and runs `printfarm-planner
   check` and `plan` on the generated CSV.
 
@@ -407,8 +407,8 @@ seams. Slicer numbers will differ; this project has not measured by how much. Af
 a gcode-insight analysis (`gcode-insight analyze plate-01.gcode --json --out plate-01.json`), put
 its path in the `gcode_json` column, and clear `print_time`, `material`, `nozzle_mm`, `size_mm`
 and `mass_g` in that row. printfarm-planner gives CSV values priority over the analysis, so any
-column left filled keeps print-forge's rough estimate (printfarm-planner 0.4.0 prints a warning
-when the two differ clearly). With gcode-insight 0.2.0 or later the analysis also supplies the
+column left filled keeps print-forge's rough estimate (printfarm-planner 0.4.0 and later print a
+warning when the two differ clearly). With gcode-insight 0.2.0 or later the analysis also supplies the
 filament colour and the printer model the plate was sliced for.
 
 ## How the meshes are built
